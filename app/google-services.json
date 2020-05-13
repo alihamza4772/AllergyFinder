@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "714321023670",
+    "firebase_url": "https://allergy-finder-9709a.firebaseio.com",
+    "project_id": "allergy-finder-9709a",
+    "storage_bucket": "allergy-finder-9709a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:714321023670:android:d4ecc573437cc4baf94c17",
+        "android_client_info": {
+          "package_name": "net.devx1.allergyfinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "714321023670-pivc6gdi7p92n6c01qhkq41319d5ihqo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYfkXR9aZHn1gcmfx9dYN1abNaIpR1cMY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "714321023670-pivc6gdi7p92n6c01qhkq41319d5ihqo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

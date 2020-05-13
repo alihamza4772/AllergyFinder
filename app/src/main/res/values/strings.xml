@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Allergy Finder</string>
+    <string name="my_allergies">My Allergies</string>
+    <string name="scan">Scan</string>
+    <string name="enter_allergy_product">Enter Allergy Product</string>
+    <string name="allergy_e_g_peanuts">Allergy. e.g. Peanuts</string>
+</resources>
