@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="10sp">
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="4"/>
+
+    <ImageView
+        android:id="@+id/imageStatus"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:visibility="gone" />
+
+
+    <TextView
+        android:id="@+id/txtStatus"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Status"
+        android:textSize="24sp"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:gravity="center"
+        android:layout_weight="1"/>
+
+</LinearLayout>
