@@ -4,27 +4,69 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBacground"
     tools:context=".view.MainActivity">
 
-    <Button
-        android:id="@+id/btnMyAllergies"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/my_allergies"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageView
+        android:id="@+id/imgAllergiesFound"
+        android:layout_width="100sp"
+        android:layout_height="100sp"
+        android:src="@drawable/ic_cough"
+        app:layout_constraintBottom_toTopOf="@+id/btnScan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.45" />
+        app:layout_constraintVertical_bias="0.4"/>
 
-    <Button
-        android:id="@+id/btnScan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/scan"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageView
+        android:id="@+id/imgHistory"
+        android:layout_width="100sp"
+        android:layout_height="100sp"
+        android:src="@drawable/ic_history"
+        app:layout_constraintBottom_toTopOf="@+id/btnScan"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias=".55" />
+        app:layout_constraintVertical_bias="0.6"/>
+
+    <ImageButton
+        android:id="@+id/btnMyAllergies"
+        android:layout_width="0dp"
+        android:layout_height="60sp"
+        android:layout_marginStart="16sp"
+        android:layout_marginBottom="16sp"
+        android:elevation="4sp"
+        android:src="@drawable/ic_virus"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toStartOf="@+id/btnScan"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnScan"
+        android:layout_width="0dp"
+        android:layout_height="60sp"
+        android:layout_marginStart="16sp"
+        android:layout_marginBottom="16sp"
+        android:elevation="4sp"
+        android:src="@drawable/ic_photo_camera"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toStartOf="@+id/btnHome"
+        app:layout_constraintStart_toEndOf="@+id/btnMyAllergies" />
+
+    <ImageButton
+        android:id="@+id/btnHome"
+        android:layout_width="0dp"
+        android:layout_height="60sp"
+        android:layout_marginStart="16sp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16sp"
+        android:elevation="4sp"
+        android:src="@drawable/ic_home"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnScan" />
 </androidx.constraintlayout.widget.ConstraintLayout>

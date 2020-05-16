@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="10sp">
 
@@ -9,24 +9,25 @@
         android:id="@+id/progress"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="4"/>
+        android:layout_weight="4"
+        android:visibility="visible"/>
 
     <ImageView
         android:id="@+id/imageStatus"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="100sp"
         android:layout_weight="4"
-        android:visibility="gone" />
-
+        android:src="@drawable/check"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/txtStatus"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Status"
-        android:textSize="24sp"
-        android:fontFamily="sans-serif-condensed-medium"
+        android:textSize="16sp"
         android:gravity="center"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:visibility="visible"/>
 
 </LinearLayout>

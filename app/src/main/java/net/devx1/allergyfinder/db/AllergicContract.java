@@ -9,4 +9,11 @@ public class AllergicContract {
         public static final String TABLE_NAME = "Allergy";
         public static final String COLUMN_ALLERGIC = "allergic";
     }
+
+    public class HistoryTable implements BaseColumns{
+    	public static final String TABLE_NAME = "History";
+    	public static final String COLUMN_PATH = "path";
+    	public static final String COLUMN_STATUS = "status";
+    	public static final String COLUMN_ALLERGIES = "allergies";
+    }
 }
