@@ -1,8 +1,15 @@
 package net.devx1.allergyfinder.view;
 
-import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import net.devx1.allergyfinder.R;
 import net.devx1.allergyfinder.components.HistoryListAdapter;
@@ -15,6 +22,7 @@ import java.util.List;
 public class HistoryActivity extends AppCompatActivity {
 	private String user;
 	ListView historyList;
+	Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,10 +33,23 @@ public class HistoryActivity extends AppCompatActivity {
 
         historyList = findViewById(R.id.historyList);
 
-	    List<History> history = DbOperations.retrieveHistory(this, user);
+	    final List<History> history = DbOperations.retrieveHistory(this, user);
 
 	    HistoryListAdapter adapter = new HistoryListAdapter(this, 0, history);
 
 	    historyList.setAdapter(adapter);
+
+	    historyList.setOnItemClickListener(
+		    new AdapterView.OnItemClickListener() {
+			    @Override
+			    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				    new AlertDialog.Builder(context)
+					    .setTitle(history.get(position).getStatus())
+					    .setMessage(history.get(position).getAllergies())
+					    .create()
+					    .show();
+			    }
+		    }
+	    );
     }
 }

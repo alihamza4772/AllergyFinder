@@ -16,9 +16,8 @@ import net.devx1.allergyfinder.model.History;
 import androidx.annotation.Nullable;
 
 public class AllergicDbHelper extends SQLiteOpenHelper {
-	private final static int DATABASE_VERSION = 4;
+	private final static int DATABASE_VERSION = 7;
 	private static final String DATABASE_NAME = "AllergyRec.db";
-	private Context ctx;
 
 	private static final String CREATE_TABLE_USERS =
 		"CREATE TABLE " + UsersTable.TABLE_NAME + " (" +
@@ -32,11 +31,14 @@ public class AllergicDbHelper extends SQLiteOpenHelper {
 
 	private static final String CREATE_TABLE_ALLERGIC =
 		"CREATE TABLE " + AllergyTable.TABLE_NAME + " (" +
-			AllergyTable._ID + " INTEGER PRIMARY KEY," +
+			AllergyTable._ID + " INTEGER," +
 			AllergyTable.COLUMN_USERNAME + " TEXT," +
 			AllergyTable.COLUMN_ALLERGIC + " TEXT," +
 			" FOREIGN KEY(" + AllergyTable.COLUMN_USERNAME + ") REFERENCES " +
-			UsersTable.TABLE_NAME + "(" + UsersTable.COLUMN_USERNAME + "));";
+			UsersTable.TABLE_NAME + "(" + UsersTable.COLUMN_USERNAME + "), " +
+			"PRIMARY KEY(" +
+			AllergyTable.COLUMN_USERNAME + ", " +
+			AllergyTable.COLUMN_ALLERGIC + "));";
 
 	private final String DROP_TABLE_ALLERGIC =
 		"DROP TABLE IF EXISTS " + AllergyTable.TABLE_NAME;
@@ -57,7 +59,6 @@ public class AllergicDbHelper extends SQLiteOpenHelper {
 
 	AllergicDbHelper(@Nullable Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-		ctx = context;
 	}
 
 	@Override

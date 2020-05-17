@@ -35,8 +35,9 @@ public class HistoryListAdapter extends ArrayAdapter<History> {
 
 		History item = getItem(position);
 
+		assert item != null;
 		Bitmap bitmap = BitmapFactory.decodeFile(item.getPath());
-		Bitmap resized = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
+		Bitmap resized = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
 
 		ImageView image = v.findViewById(R.id.historyImage);
 		TextView text = v.findViewById(R.id.historyStatus);

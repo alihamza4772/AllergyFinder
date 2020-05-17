@@ -8,16 +8,16 @@
 
     <ImageView
         android:id="@+id/historyImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="3"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        android:layout_width="100sp"
+        android:layout_height="100sp"
+        tools:srcCompat="@tools:sample/backgrounds/scenic"
+        android:contentDescription="@string/product_item" />
 
     <TextView
         android:id="@+id/historyStatus"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Status"
-        android:layout_weight="1"/>
+        android:layout_height="100sp"
+        android:text="@string/status"
+        android:gravity="center"/>
 
 </LinearLayout>

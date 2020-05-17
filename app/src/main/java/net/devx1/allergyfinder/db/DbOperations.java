@@ -61,6 +61,31 @@ public class DbOperations {
 		return size > 0;
 	}
 
+	public static String getUserPicture(Context context, String username){
+		String[] projection = {
+			UsersTable.COLUMN_IMAGE
+		};
+
+		String selection =
+			UsersTable.COLUMN_USERNAME + " = ?";
+		String[] selectionArgs = {username};
+
+		Cursor cursor =
+			initRead(context).query(
+				UsersTable.TABLE_NAME,
+				projection,
+				selection,
+				selectionArgs,
+				null,
+				null,
+				null
+			);
+		cursor.moveToNext();
+		String path = cursor.getString(0);
+		cursor.close();
+		return path;
+	}
+
 	public static long insertAllergy(Context ctx, String username, String allergic) {
 		ContentValues cv = new ContentValues();
 		cv.put(AllergyTable.COLUMN_USERNAME, username);

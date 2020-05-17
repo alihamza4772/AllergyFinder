@@ -12,4 +12,6 @@
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="register">Register</string>
+    <string name="log_out">log out</string>
+    <string name="product_item">product item</string>
 </resources>

@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
 	String currentPhotoPath;
 	StatusDialog dialog;
 
+	ImageButton actionBarProfile, actionBarAdd;
+
 	static final int REQUEST_IMAGE_CAPTURE = 1;
 
 	@Override
@@ -58,9 +61,9 @@ public class MainActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		Intent intent = getIntent();
-		username = intent.getStringExtra("user");
-		Toast.makeText(context, username, Toast.LENGTH_SHORT).show();
+		username = getIntent().getStringExtra("user");
+		actionBarProfile = findViewById(R.id.btnProfile);
+		actionBarAdd = findViewById(R.id.btnAdd);
 
 		btnMyAllergies = findViewById(R.id.btnMyAllergies);
 		btnScan = findViewById(R.id.btnScan);
@@ -104,7 +107,29 @@ public class MainActivity extends AppCompatActivity {
 		);
 
 		dialog = new StatusDialog(context);
-		dialog.updateStatus("New Status");
+
+		actionBarProfile.setOnClickListener(
+			new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent i = new Intent(MainActivity.this, ProfileActivity.class);
+					i.putExtra("user", username);
+					startActivity(i);
+				}
+			}
+		);
+
+		actionBarAdd.setOnClickListener(
+			new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent i = new Intent(MainActivity.this, MyAllergiesActivity.class);
+					i.putExtra("user", username);
+					i.putExtra("start", "");
+					startActivity(i);
+				}
+			}
+		);
 	}
 
 	private File createImageFile() throws IOException {
@@ -159,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
 		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 			try {
 				image = BitmapFactory.decodeFile(currentPhotoPath);
+				Toast.makeText(context, image.getWidth() + "x" + image.getHeight(), Toast.LENGTH_SHORT).show();
 			} catch (Exception e) {
 				Log.d("toasting", Objects.requireNonNull(e.getMessage()));
 				dialog.updateStatus("Image Failed");
@@ -179,7 +205,17 @@ public class MainActivity extends AppCompatActivity {
 		dialog.updateStatus("Fetching Text...");
 		dialog.show();
 
-		FirebaseVisionImage fvi = FirebaseVisionImage.fromBitmap(image);
+		FirebaseVisionImage fvi = null;
+		try {
+			Toast.makeText(context, Uri.parse(currentPhotoPath).toString(), Toast.LENGTH_SHORT).show();
+			fvi = FirebaseVisionImage.fromFilePath(context,
+				Uri.parse("file://" + currentPhotoPath));
+		} catch (IOException e) {
+			e.printStackTrace();
+			dialog.updateStatus("Image Failed! Try Again!");
+			dialog.updateButtonName("Okay");
+			return;
+		}
 		FirebaseVisionTextRecognizer fvtr = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
 
 		fvtr.processImage(fvi)
@@ -187,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
 				new OnSuccessListener<FirebaseVisionText>() {
 					@Override
 					public void onSuccess(final FirebaseVisionText firebaseVisionText) {
+
 						identifyLanguage(firebaseVisionText);
 					}
 				}
@@ -241,6 +278,7 @@ public class MainActivity extends AppCompatActivity {
 	                                   final FirebaseVisionText firebaseVisionText) {
 		dialog.updateStatus(new Locale(languageCode).getDisplayLanguage() + " Language Detected");
 
+		Toast.makeText(context, languageCode, Toast.LENGTH_SHORT).show();
 		Integer sourceLanguage;
 		try {
 			sourceLanguage = FirebaseTranslateLanguage.languageForLanguageCode(languageCode);
@@ -248,8 +286,6 @@ public class MainActivity extends AppCompatActivity {
 			e.printStackTrace();
 			return;
 		}
-
-		assert sourceLanguage != null;
 
 		FirebaseTranslatorOptions options =
 			new FirebaseTranslatorOptions.Builder()
@@ -265,6 +301,8 @@ public class MainActivity extends AppCompatActivity {
 
 		dialog.updateStatus("Downloading " + new Locale(languageCode).getDisplayLanguage() + ".." +
 				".\nIt may cost you internet data!");
+		dialog.updateButtonName("Cancel");
+
 		translator.downloadModelIfNeeded()
 			.addOnSuccessListener(
 				new OnSuccessListener<Void>() {
@@ -330,6 +368,7 @@ public class MainActivity extends AppCompatActivity {
 		}
 
 		dialog.updateStatus(respText.toString());
+		dialog.updateButtonName("Okay");
 		DbOperations.insertHistory(context, username, currentPhotoPath, historyStatus,
 			respText.toString());
 	}
