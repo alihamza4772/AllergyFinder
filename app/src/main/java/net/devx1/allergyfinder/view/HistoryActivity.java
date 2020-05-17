@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity {
+	private String user;
 	ListView historyList;
 
     @Override
@@ -20,9 +21,11 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
+        user = getIntent().getStringExtra("user");
+
         historyList = findViewById(R.id.historyList);
 
-	    List<History> history = DbOperations.retrieveHistory(this);
+	    List<History> history = DbOperations.retrieveHistory(this, user);
 
 	    HistoryListAdapter adapter = new HistoryListAdapter(this, 0, history);
 

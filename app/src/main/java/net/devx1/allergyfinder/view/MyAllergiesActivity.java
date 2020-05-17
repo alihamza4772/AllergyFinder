@@ -2,15 +2,11 @@ package net.devx1.allergyfinder.view;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ContextThemeWrapper;
 
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,11 +31,14 @@ public class    MyAllergiesActivity extends AppCompatActivity {
     Button btnAddAllergy;
     ListView listAllergies;
     final Context context = this;
+    private String user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_allergies);
+
+        user = getIntent().getStringExtra("user");
 
         btnAddAllergy = findViewById(R.id.btnAddAllergy);
         listAllergies = findViewById(R.id.listAllergies);
@@ -61,7 +60,11 @@ public class    MyAllergiesActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     String inp = et.getText().toString();
                                     if (!inp.equals("")){
-                                        DbOperations.insert(context, inp);
+                                        long id = DbOperations.insertAllergy(context, user, inp);
+                                        if (id == -1){
+	                                        Toast.makeText(context, "Insertion Failed",
+		                                        Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 }
                             })
@@ -84,7 +87,7 @@ public class    MyAllergiesActivity extends AppCompatActivity {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus){
             List<String> allergies = new ArrayList<>();
-            for (Allergic allergic: DbOperations.retrieve(context)){
+            for (Allergic allergic: DbOperations.retrieveAllergies(context, user)){
                 allergies.add(allergic.getAllergicTo());
             }
 
@@ -101,7 +104,7 @@ public class    MyAllergiesActivity extends AppCompatActivity {
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        DbOperations.delete(
+                                        DbOperations.deleteAllergy(
                                             context,
                                             (String) listAllergies.getItemAtPosition(position)
                                         );

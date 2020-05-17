@@ -4,4 +4,12 @@
     <string name="scan">Scan</string>
     <string name="enter_allergy_product">Enter Allergy Product</string>
     <string name="allergy_e_g_peanuts">Allergy. e.g. Peanuts</string>
+    <string name="status">Status</string>
+    <string name="add_allergy_button">Add Allergy Button</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="allergy_finder">Allergy Finder</string>
+    <string name="username">Username</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
 </resources>

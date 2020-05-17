@@ -2,12 +2,10 @@ package net.devx1.allergyfinder.view;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,19 +14,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
 import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
 import com.google.firebase.ml.naturallanguage.languageid.FirebaseLanguageIdentification;
 import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage;
@@ -41,7 +32,6 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
 import net.devx1.allergyfinder.R;
 import net.devx1.allergyfinder.db.DbOperations;
-import net.devx1.allergyfinder.model.History;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,17 +43,14 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-	ImageButton btnMyAllergies, btnScan;
-	ImageView imgHistory;
+	private String username;
+	ImageButton btnMyAllergies, btnScan, btnHistory;
 	Bitmap image;
 
 	Context context = this;
 	String currentPhotoPath;
-	AlertDialog dialog;
+	StatusDialog dialog;
 
-	TextView txtStatus;
-	ProgressBar progressBar;
-	ImageView imgStatus;
 	static final int REQUEST_IMAGE_CAPTURE = 1;
 
 	@Override
@@ -71,19 +58,21 @@ public class MainActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		Intent intent = getIntent();
+		username = intent.getStringExtra("user");
+		Toast.makeText(context, username, Toast.LENGTH_SHORT).show();
+
 		btnMyAllergies = findViewById(R.id.btnMyAllergies);
 		btnScan = findViewById(R.id.btnScan);
-		imgHistory = findViewById(R.id.imgHistory);
+		btnHistory = findViewById(R.id.btnHistory);
 
 		btnMyAllergies.setOnClickListener(
 			new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					startActivity(
-						new Intent(
-							MainActivity.this, MyAllergiesActivity.class
-						)
-					);
+					Intent i = new Intent(MainActivity.this, MyAllergiesActivity.class);
+					i.putExtra("user", username);
+					startActivity(i);
 				}
 			}
 		);
@@ -92,59 +81,39 @@ public class MainActivity extends AppCompatActivity {
 			new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					dispatchTakePictureIntent();
+					takePicture();
 				}
 			}
 		);
 
-		imgHistory.setOnClickListener(
+		btnHistory.setOnClickListener(
 			new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					Intent i = new Intent(
+						MainActivity.this, HistoryActivity.class
+					);
+
+					i.putExtra("user", username);
+
 					startActivity(
-						new Intent(
-							MainActivity.this, HistoryActivity.class
-						)
+						i
 					);
 				}
 			}
 		);
 
-		LayoutInflater li = getLayoutInflater();
-		View v = li.inflate(R.layout.dialog_processing, null);
-		txtStatus = v.findViewById(R.id.txtStatus);
-		progressBar = v.findViewById(R.id.progress);
-		imgStatus = v.findViewById(R.id.imageStatus);
-
-		dialog = new AlertDialog.Builder(context).create();
-		dialog.setView(v);
-		dialog.setButton(
-			AlertDialog.BUTTON_NEGATIVE,
-			"Cancel",
-			new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.cancel();
-				}
-			}
-		);
-		dialog.setButton(
-			AlertDialog.BUTTON_POSITIVE,
-			"Okay",
-			new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.cancel();
-				}
-			}
-		);
+		dialog = new StatusDialog(context);
+		dialog.updateStatus("New Status");
 	}
 
 	private File createImageFile() throws IOException {
 		String timeStamp =
 			new SimpleDateFormat("yyyyMMdd_HHmmss", new Locale("en")).format(new Date());
+
 		String imageFileName = "JPEG_" + timeStamp + "_";
 		File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
 		File image = File.createTempFile(
 			imageFileName,
 			".jpg",
@@ -155,18 +124,13 @@ public class MainActivity extends AppCompatActivity {
 		return image;
 	}
 
-	private void dispatchTakePictureIntent() {
+	private void takePicture() {
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
 			File photoFile = null;
 			try {
 				photoFile = createImageFile();
-			} catch (IOException ex) {
-				Log.d("toasting", "File Creation Failure");
-				Log.d("toasting", ex.getMessage());
-			}
 
-			if (photoFile != null) {
 				Uri photoURI = FileProvider.getUriForFile(this,
 					"net.devx1.allergyfinder.fileprovider",
 					photoFile
@@ -174,7 +138,17 @@ public class MainActivity extends AppCompatActivity {
 
 				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 				startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+			} catch (IOException ex) {
+				Log.d("devx1 - takePicture", ex.getMessage());
+				dialog.updateStatus("Camera Failed. Try Again!");
+				dialog.updateButtonName("Okay");
+				dialog.show();
 			}
+		} else {
+			Log.d("devx1 - takePicture", "Null");
+			dialog.updateStatus("Camera Failed. Try Again!");
+			dialog.updateButtonName("Okay");
+			dialog.show();
 		}
 	}
 
@@ -187,22 +161,28 @@ public class MainActivity extends AppCompatActivity {
 				image = BitmapFactory.decodeFile(currentPhotoPath);
 			} catch (Exception e) {
 				Log.d("toasting", Objects.requireNonNull(e.getMessage()));
+				dialog.updateStatus("Image Failed");
+				dialog.updateButtonName("Okay");
+				dialog.show();
+				return;
 			}
 			detectTextFromImage();
 		} else {
-			Log.d("toasting", "Capture Failure");
 			finishActivity(REQUEST_IMAGE_CAPTURE);
+			dialog.updateStatus("Capture Failure");
+			dialog.updateButtonName("Okay");
+			dialog.show();
 		}
 	}
 
 	void detectTextFromImage() {
-		txtStatus.setText("Fetching Text...");
+		dialog.updateStatus("Fetching Text...");
 		dialog.show();
 
 		FirebaseVisionImage fvi = FirebaseVisionImage.fromBitmap(image);
 		FirebaseVisionTextRecognizer fvtr = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
 
-		final Task<FirebaseVisionText> results = fvtr.processImage(fvi)
+		fvtr.processImage(fvi)
 			.addOnSuccessListener(
 				new OnSuccessListener<FirebaseVisionText>() {
 					@Override
@@ -215,31 +195,34 @@ public class MainActivity extends AppCompatActivity {
 				new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
-						Log.d("toasting", "Failed Processing Image");
+						dialog.updateStatus("Text fetch failed! Try Again!");
+						dialog.updateButtonName("Okay");
 					}
 				}
 			);
 	}
 
 	private void identifyLanguage(final FirebaseVisionText firebaseVisionText) {
-		txtStatus.setText("Detecting Language...");
+		dialog.updateStatus("Detecting Language");
+
 		FirebaseLanguageIdentification identification =
 			FirebaseNaturalLanguage.getInstance()
 				.getLanguageIdentification();
+
 		identification.identifyLanguage(firebaseVisionText.getText())
 			.addOnSuccessListener(
 				new OnSuccessListener<String>() {
 					@Override
 					public void onSuccess(@Nullable final String languageCode) {
-						assert languageCode != null;
-						if (!languageCode.equals("und")) {
-							if (languageCode.equals("en")) {
+						if (!Objects.equals(languageCode, "und")) {
+							if (Objects.equals(languageCode, "en")) {
 								findAllergies(firebaseVisionText.getText());
 							} else {
 								translateLanguageFrom(languageCode, firebaseVisionText);
 							}
 						} else {
-							txtStatus.setText("Language is Undefined");
+							dialog.updateStatus("Undefined Language");
+							dialog.updateButtonName("Okay");
 						}
 					}
 				})
@@ -247,27 +230,42 @@ public class MainActivity extends AppCompatActivity {
 				new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
-						Toast.makeText(context, "Language Recognition Failure", Toast.LENGTH_SHORT).show();
+						Log.d("devx1 - langId", "Language Identification Failed! Try Again!");
+						dialog.updateStatus("Language Identification Failed! Try Again!");
+						dialog.updateButtonName("Okay");
 					}
 				});
 	}
 
 	private void translateLanguageFrom(final String languageCode,
 	                                   final FirebaseVisionText firebaseVisionText) {
-		txtStatus.setText("Translating " + new Locale(languageCode).getDisplayLanguage() + "...");
+		dialog.updateStatus(new Locale(languageCode).getDisplayLanguage() + " Language Detected");
+
+		Integer sourceLanguage;
+		try {
+			sourceLanguage = FirebaseTranslateLanguage.languageForLanguageCode(languageCode);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+
+		assert sourceLanguage != null;
+
 		FirebaseTranslatorOptions options =
 			new FirebaseTranslatorOptions.Builder()
-				.setSourceLanguage(FirebaseTranslateLanguage.languageForLanguageCode(languageCode))
+				.setSourceLanguage(sourceLanguage)
 				.setTargetLanguage(FirebaseTranslateLanguage.EN)
 				.build();
+
 		final FirebaseTranslator translator =
 			FirebaseNaturalLanguage.getInstance().getTranslator(options);
 
-		FirebaseModelDownloadConditions conditions = new FirebaseModelDownloadConditions.Builder()
-			.requireWifi()
-			.build();
+//		FirebaseModelDownloadConditions conditions = new FirebaseModelDownloadConditions.Builder()
+//			.build();
 
-		translator.downloadModelIfNeeded(conditions)
+		dialog.updateStatus("Downloading " + new Locale(languageCode).getDisplayLanguage() + ".." +
+				".\nIt may cost you internet data!");
+		translator.downloadModelIfNeeded()
 			.addOnSuccessListener(
 				new OnSuccessListener<Void>() {
 					@Override
@@ -284,7 +282,10 @@ public class MainActivity extends AppCompatActivity {
 								new OnFailureListener() {
 									@Override
 									public void onFailure(@NonNull Exception e) {
-										Toast.makeText(context, "Translation Failure", Toast.LENGTH_SHORT).show();
+										Log.d("devx1 - translation", "Translation Failed! Try " +
+											"Again!");
+										dialog.updateStatus("Translation Failed! Try Again!");
+										dialog.updateButtonName("Okay");
 									}
 								});
 					}
@@ -293,45 +294,43 @@ public class MainActivity extends AppCompatActivity {
 				new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
-						Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+						Log.d("devx1 - download", "Language Pack Download Failed! Try Again!");
+						dialog.updateStatus("Language Pack Download Failed! Try Again!");
+						dialog.updateButtonName("Okay");
 					}
 				});
 	}
 
 	private void findAllergies(String translatedText) {
-		txtStatus.setText("Finding Allergies...");
+		dialog.updateStatus("Finding Allergies");
+
 		translatedText = translatedText.toLowerCase();
-		List<String> allergies = DbOperations.retrieveText(context);
+		List<String> allergies = DbOperations.retrieveText(context, username);
+
 		List<String> foundAllergies = new ArrayList<>();
 		for (String allergy : allergies) {
 			if (translatedText.contains(allergy.toLowerCase())) {
 				foundAllergies.add(allergy);
 			}
-
 		}
 
-		StringBuilder textToSet = new StringBuilder();
+		StringBuilder respText = new StringBuilder();
 
-		String historyStatus = "";
+		String historyStatus = "This product is ";
 		if (foundAllergies.size() > 0) {
-			imgStatus.setImageResource(R.drawable.cross);
-			textToSet.append("Found Allergic Items\n");
+			respText.append("This product contains items that you are allergic to:\n");
 			for (String allergy : foundAllergies) {
-				textToSet.append("\n").append(allergy);
+				respText.append(allergy).append("\n");
 			}
-			historyStatus = "alergic";
+
+			historyStatus = "allergic";
 		} else {
-			imgStatus.setImageResource(R.drawable.check);
-			textToSet.append("No Allergic Items Found");
+			respText.append("No Allergic Items Found");
 			historyStatus = "safe";
 		}
 
-		imgStatus.setVisibility(View.VISIBLE);
-		progressBar.setVisibility(View.GONE);
-		txtStatus.setText(textToSet);
-		Button cancelButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-		cancelButton.setVisibility(View.GONE);
-		DbOperations.history(context, currentPhotoPath, historyStatus, textToSet.toString());
-		Toast.makeText(context, "" + DbOperations.retrieveHistory(context).size(), Toast.LENGTH_SHORT).show();
+		dialog.updateStatus(respText.toString());
+		DbOperations.insertHistory(context, username, currentPhotoPath, historyStatus,
+			respText.toString());
 	}
 }
