@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
 public class AllergicDbHelper extends SQLiteOpenHelper {
 	private final static int DATABASE_VERSION = 7;
 	private static final String DATABASE_NAME = "AllergyRec.db";
-
+//db
 	private static final String CREATE_TABLE_USERS =
 		"CREATE TABLE " + UsersTable.TABLE_NAME + " (" +
 			UsersTable._ID + " INTEGER PRIMARY KEY," +

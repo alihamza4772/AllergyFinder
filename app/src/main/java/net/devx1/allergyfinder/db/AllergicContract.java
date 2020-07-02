@@ -6,7 +6,7 @@ public class AllergicContract {
 	private AllergicContract() {
 	}
 
-	public class UsersTable implements BaseColumns {
+	public class UsersTable implements BaseColumns { //table
 		public static final String TABLE_NAME = "Users";
 		public static final String COLUMN_USERNAME = "username";
 		public static final String COLUMN_PASSWORD = "password";

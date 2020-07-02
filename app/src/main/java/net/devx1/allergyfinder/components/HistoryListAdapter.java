@@ -21,6 +21,7 @@ import java.util.List;
 public class HistoryListAdapter extends ArrayAdapter<History> {
 	public HistoryListAdapter(@NonNull Context context, int resource, @NonNull List<History> objects) {
 		super(context, resource, objects);
+	//
 	}
 
 	@NonNull

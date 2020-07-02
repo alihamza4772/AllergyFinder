@@ -22,7 +22,7 @@ import androidx.fragment.app.DialogFragment;
 import net.devx1.allergyfinder.R;
 
 
-class StatusDialog {
+class StatusDialog {  //status
 	private AlertDialog dialog;
 	private TextView txtStatus;
 	private Button btnAction;

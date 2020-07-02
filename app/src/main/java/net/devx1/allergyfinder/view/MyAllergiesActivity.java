@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MyAllergiesActivity extends AppCompatActivity {
+public class MyAllergiesActivity extends AppCompatActivity { //items
 	ListView listAllergies;
 	final Context context = this;
 	private String user;

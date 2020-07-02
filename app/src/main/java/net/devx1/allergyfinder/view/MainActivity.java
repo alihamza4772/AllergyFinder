@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity { //main
 	private String username;
 	ImageButton btnMyAllergies, btnScan, btnHistory;
 	Bitmap image;
@@ -184,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
 		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 			try {
 				image = BitmapFactory.decodeFile(currentPhotoPath);
-				Toast.makeText(context, image.getWidth() + "x" + image.getHeight(), Toast.LENGTH_SHORT).show();
 			} catch (Exception e) {
 				Log.d("toasting", Objects.requireNonNull(e.getMessage()));
 				dialog.updateStatus("Image Failed");
@@ -203,11 +202,11 @@ public class MainActivity extends AppCompatActivity {
 
 	void detectTextFromImage() {
 		dialog.updateStatus("Fetching Text...");
+		dialog.updateButtonName("Cancel");
 		dialog.show();
 
 		FirebaseVisionImage fvi = null;
 		try {
-			Toast.makeText(context, Uri.parse(currentPhotoPath).toString(), Toast.LENGTH_SHORT).show();
 			fvi = FirebaseVisionImage.fromFilePath(context,
 				Uri.parse("file://" + currentPhotoPath));
 		} catch (IOException e) {
@@ -223,7 +222,6 @@ public class MainActivity extends AppCompatActivity {
 				new OnSuccessListener<FirebaseVisionText>() {
 					@Override
 					public void onSuccess(final FirebaseVisionText firebaseVisionText) {
-
 						identifyLanguage(firebaseVisionText);
 					}
 				}
@@ -240,7 +238,8 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void identifyLanguage(final FirebaseVisionText firebaseVisionText) {
-		dialog.updateStatus("Detecting Language");
+		dialog.updateStatus("Detecting Language...");
+		dialog.updateButtonName("Cancel");
 
 		FirebaseLanguageIdentification identification =
 			FirebaseNaturalLanguage.getInstance()
@@ -278,7 +277,6 @@ public class MainActivity extends AppCompatActivity {
 	                                   final FirebaseVisionText firebaseVisionText) {
 		dialog.updateStatus(new Locale(languageCode).getDisplayLanguage() + " Language Detected");
 
-		Toast.makeText(context, languageCode, Toast.LENGTH_SHORT).show();
 		Integer sourceLanguage;
 		try {
 			sourceLanguage = FirebaseTranslateLanguage.languageForLanguageCode(languageCode);
@@ -296,8 +294,6 @@ public class MainActivity extends AppCompatActivity {
 		final FirebaseTranslator translator =
 			FirebaseNaturalLanguage.getInstance().getTranslator(options);
 
-//		FirebaseModelDownloadConditions conditions = new FirebaseModelDownloadConditions.Builder()
-//			.build();
 
 		dialog.updateStatus("Downloading " + new Locale(languageCode).getDisplayLanguage() + ".." +
 				".\nIt may cost you internet data!");
@@ -308,6 +304,8 @@ public class MainActivity extends AppCompatActivity {
 				new OnSuccessListener<Void>() {
 					@Override
 					public void onSuccess(Void v) {
+						dialog.updateStatus("Translating...");
+						dialog.updateButtonName("Cancel");
 						translator.translate(firebaseVisionText.getText())
 							.addOnSuccessListener(
 								new OnSuccessListener<String>() {
@@ -340,7 +338,8 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void findAllergies(String translatedText) {
-		dialog.updateStatus("Finding Allergies");
+		dialog.updateStatus("Finding Allergies...");
+		dialog.updateButtonName("Cancel");
 
 		translatedText = translatedText.toLowerCase();
 		List<String> allergies = DbOperations.retrieveText(context, username);

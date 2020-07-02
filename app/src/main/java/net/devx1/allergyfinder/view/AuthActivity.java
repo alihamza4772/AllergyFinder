@@ -17,7 +17,7 @@ public class AuthActivity extends AppCompatActivity {
 	EditText etUsername, etPassword;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) { // oncreate
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_auth);
 

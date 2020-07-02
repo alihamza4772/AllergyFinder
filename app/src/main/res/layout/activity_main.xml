@@ -19,13 +19,14 @@
         android:layout_width="100sp"
         android:layout_height="100sp"
         android:layout_margin="8sp"
+        android:scaleType="fitCenter"
         android:src="@drawable/ic_cough"
         app:layout_constraintBottom_toTopOf="@+id/btnHistory"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include"
-        app:layout_constraintVertical_bias="0.4"
+        app:layout_constraintVertical_bias="0.39"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <ImageButton
@@ -33,10 +34,11 @@
         android:layout_width="100sp"
         android:layout_height="100sp"
         android:layout_margin="8sp"
+        android:layout_marginTop="30dp"
         android:src="@drawable/ic_history"
         app:layout_constraintBottom_toTopOf="@+id/btnScan"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnAllergiesFound"
         app:layout_constraintVertical_bias="0.6" />
@@ -46,10 +48,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16sp"
-        android:layout_marginBottom="16sp"
         android:elevation="4sp"
         android:src="@drawable/ic_virus"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toStartOf="@+id/btnScan"
         app:layout_constraintStart_toStartOf="parent" />
@@ -59,10 +60,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16sp"
-        android:layout_marginBottom="16sp"
         android:elevation="4sp"
         android:src="@drawable/ic_photo_camera"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toStartOf="@+id/btnHome"
         app:layout_constraintStart_toEndOf="@+id/btnMyAllergies" />
@@ -73,11 +73,63 @@
         android:layout_height="0dp"
         android:layout_marginStart="16sp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16sp"
         android:elevation="4sp"
         android:src="@drawable/ic_home"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnScan" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.93" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/my_allergies"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btnMyAllergies"
+        app:layout_constraintStart_toStartOf="@+id/btnMyAllergies"
+        app:layout_constraintTop_toBottomOf="@+id/btnMyAllergies" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Scan Product"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btnScan"
+        app:layout_constraintStart_toStartOf="@+id/btnScan"
+        app:layout_constraintTop_toBottomOf="@+id/btnScan" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btnHome"
+        app:layout_constraintStart_toStartOf="@+id/btnHome"
+        app:layout_constraintTop_toBottomOf="@+id/btnHome"
+        app:layout_constraintVertical_bias="0.384" />
 </androidx.constraintlayout.widget.ConstraintLayout>

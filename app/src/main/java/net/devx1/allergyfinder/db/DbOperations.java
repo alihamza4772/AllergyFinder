@@ -23,7 +23,7 @@ public class DbOperations {
 		AllergicDbHelper helper = new AllergicDbHelper(ctx);
 		return helper.getWritableDatabase();
 	}
-
+//o
 	private static SQLiteDatabase initRead(Context ctx) {
 		AllergicDbHelper helper = new AllergicDbHelper(ctx);
 		return helper.getReadableDatabase();
