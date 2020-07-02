@@ -1,6 +1,7 @@
 package net.devx1.allergyfinder.model;
 
 public class Profile {
+	//userprofile
 	private String username, password, path;
 
 	public String getUsername() {

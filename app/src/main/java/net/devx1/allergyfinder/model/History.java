@@ -1,6 +1,7 @@
 package net.devx1.allergyfinder.model;
 
 public class History {
+	//history
 	private String path, status, allergies;
 
 	public String getPath() {

@@ -18,7 +18,7 @@ import android.widget.Toast;
 import net.devx1.allergyfinder.R;
 import net.devx1.allergyfinder.db.DbOperations;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {  // profile
 	private String user;
 	private ImageView profile;
 	private Context context = this;

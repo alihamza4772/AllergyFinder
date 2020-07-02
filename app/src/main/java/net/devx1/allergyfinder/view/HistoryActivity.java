@@ -19,7 +19,7 @@ import net.devx1.allergyfinder.model.History;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryActivity extends AppCompatActivity {
+public class HistoryActivity extends AppCompatActivity { //history
 	private String user;
 	ListView historyList;
 	Context context = this;
